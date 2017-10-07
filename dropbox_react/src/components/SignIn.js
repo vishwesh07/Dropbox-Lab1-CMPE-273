@@ -1,6 +1,7 @@
 import React,{Component} from 'react';
 import * as API from '../api/API_SignIn';
 import { withRouter } from 'react-router-dom';
+<<<<<<< HEAD
 class SignIn extends Component{
 
     state = {
@@ -11,18 +12,49 @@ class SignIn extends Component{
         isSignedIn: false,
         message: ''
     };
+=======
+
+class SignIn extends Component{
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            signInUserData: {
+                email: undefined,
+                password: undefined
+            },
+            isSignedIn: undefined,
+            message: undefined
+        };
+    }
+
+    componentWillMount(){
+        this.setState({
+            signInUserData: {
+                email: this.props.email,
+                password: ''
+            },
+            isSignedIn: this.props.isSignedIn,
+            message: ''
+        });
+    }
+>>>>>>> master
 
     handleSignIn = () => {
         console.log("In handle sign in "+this.state.signInUserData.email+" "+this.state.signInUserData.password);
         API.doSignIn(this.state)
             .then( (response) => {
 
+<<<<<<< HEAD
                 console.log(response.status);
 
+=======
+>>>>>>> master
                 if(response.status === 201){
                     this.setState({
                         ...this.state,
                         isSignedIn: true,
+<<<<<<< HEAD
                         message: response.message
                     });
                 }
@@ -30,6 +62,16 @@ class SignIn extends Component{
                     this.setState({
                         ...this.state,
                         message: response.message
+=======
+                        message: "message : "+response.message+" , status : "+response.status
+                    });
+                }
+
+                else if(response.status === 401){
+                    this.setState({
+                        ...this.state,
+                        message: response.message+" , status : "+response.status
+>>>>>>> master
                     });
                 }
             });
@@ -39,7 +81,11 @@ class SignIn extends Component{
 
         //check with the node js sessions using API calls made from handleIsSignedIn that user is signedIn or not?
 
+<<<<<<< HEAD
         //    <Route exact path='/SignIn'/>
+=======
+
+>>>>>>> master
 
             return(
 

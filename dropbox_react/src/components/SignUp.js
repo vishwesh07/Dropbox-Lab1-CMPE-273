@@ -4,6 +4,7 @@ import withRouter from "react-router-dom/es/withRouter";
 
 class SignUp extends Component{
 
+<<<<<<< HEAD
     state = {
         signUpUserData: {
             firstName: '',
@@ -14,6 +15,34 @@ class SignUp extends Component{
         isSignedIn: false,
         message: ''
     };
+=======
+    constructor(props) {
+        super(props);
+        this.state = {
+            signUpUserData: {
+                firstName: undefined,
+                lastName: undefined,
+                email: undefined,
+                password: undefined,
+            },
+            isSignedIn: undefined,
+            message: undefined
+        };
+    }
+
+    componentWillMount(){
+        this.setState({
+            signUpUserData: {
+                firstName: '',
+                lastName: '',
+                email: '',
+                password: '',
+            },
+            isSignedIn: this.props.isSignedIn,
+            message: ''
+        });
+    }
+>>>>>>> master
 
     handleSignUp = () => {
         console.log("In hendleSignUp"+this.state);
@@ -21,6 +50,7 @@ class SignUp extends Component{
             .then( (response) => {
                     this.setState({
                         ...this.state,
+<<<<<<< HEAD
                         isSignedIn: true,
                         message: response.message
                     });
@@ -33,6 +63,17 @@ class SignUp extends Component{
 
     }
 
+=======
+                        message: response.message
+                    });
+                    this.props.handleIsSignedIn(this.state.signUpUserData.email);
+                    if(this.state.message === "Successful Sign up"){
+                        this.props.history.push("/SignIn");
+                    }
+            });
+    }
+
+>>>>>>> master
     render(){
 
          return(
@@ -41,7 +82,10 @@ class SignUp extends Component{
 
                     <br/> <br/> <br/>
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
                     <form>
 
                         <div className="form-group">

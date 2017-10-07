@@ -25,7 +25,11 @@ function dbOperation(callback,sqlQuery){
         else
         {
             // return err or result
+<<<<<<< HEAD
             console.log("\n DB Results:"+rows);
+=======
+            console.log("\n DB Results : "+rows.length);
+>>>>>>> master
             callback(err, rows);
         }
     });

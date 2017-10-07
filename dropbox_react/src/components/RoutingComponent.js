@@ -6,6 +6,7 @@ import Homepage from "./Homepage";
 
 class RoutingComponent extends Component {
 
+<<<<<<< HEAD
     state = {
         isSignedIn: false,
         message: '',
@@ -14,6 +15,27 @@ class RoutingComponent extends Component {
 
     handleIsSignedIn = () => {
 
+=======
+    constructor(props) {
+        super(props);
+        this.state = {
+            isSignedIn: false,
+            message: '',
+            email: ''
+        };
+    }
+
+    handleIsSignedIn = (email) => {
+        // API.doSignUp(this.state)
+        //     .then( (response) => {
+        //         this.setState({
+        //             ...this.state,
+        //             message: response.message
+        //         });
+        //         this.props.handleIsSignedIn();
+        //         this.props.history.push("/SignIn");
+        //     });
+>>>>>>> master
     }
 
     render() {
@@ -21,6 +43,7 @@ class RoutingComponent extends Component {
             <div className="container-fluid">
 
               <Route exact path="/" render={() => (
+<<<<<<< HEAD
                     <SignUp isSignedIn={this.state.isSignedIn}/>
                 )}/>
 
@@ -31,6 +54,21 @@ class RoutingComponent extends Component {
 
                 <Route exact path="/SignIn" render={() => (
                     <SignIn isSignedIn={this.state.isSignedIn}/>
+=======
+                    <SignUp isSignedIn={this.props.isSignedIn}  handleIsSignedIn={this.handleIsSignedIn.bind(this)}/>
+                )}/>
+
+                <Route exact path="/SignUp" render={() => (
+                    <SignUp isSignedIn={this.props.isSignedIn} handleIsSignedIn={this.handleIsSignedIn.bind(this)}/>
+                )}/>
+
+                <Route exact path="/SignIn" render={() => (
+                    <SignIn isSignedIn={this.props.isSignedIn} handleIsSignedIn={this.handleIsSignedIn.bind(this)}/>
+                )}/>
+
+                <Route exact path="/HomePage" render={() => (
+                    <Homepage isSignedIn={this.props.isSignedIn} handleIsSignedIn={this.handleIsSignedIn.bind(this)}/>
+>>>>>>> master
                 )}/>
 
             </div>

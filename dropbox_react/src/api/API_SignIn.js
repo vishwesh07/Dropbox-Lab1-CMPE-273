@@ -10,6 +10,10 @@ export const doSignIn = (payload) =>
         headers: {
             'Content-Type': 'application/json'
         },
+<<<<<<< HEAD
+=======
+        credentials:'include',
+>>>>>>> master
         data: payload
     }).then( res => {
         return res.data;
@@ -17,6 +21,7 @@ export const doSignIn = (payload) =>
         .catch(error => {
             console.log("This is error");
             return error;
+<<<<<<< HEAD
         });
 
 // fetch(`${api}/signIn/`, {
@@ -27,3 +32,6 @@ export const doSignIn = (payload) =>
 //     },
 //     body: JSON.stringify(payload)
 // })
+=======
+        });
+>>>>>>> master
