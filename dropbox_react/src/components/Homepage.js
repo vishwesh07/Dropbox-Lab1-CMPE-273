@@ -91,11 +91,11 @@ class HomePage extends Component{
                             // multiple={"multiple"}
                         />
 
-                        {this.state.images.map(tile => (
-                            <p>
-                                <img src={'http://localhost:3001/'+tile.img} alt={'myimage'}/>
-                            </p>
-                        ))}
+                        {/*{this.state.images.map(tile => (*/}
+                            {/*<p>*/}
+                                {/*<img src={'http://localhost:3001/'+tile.img} alt={'myimage'}/>*/}
+                            {/*</p>*/}
+                        {/*))}*/}
 
                     </div>
 
