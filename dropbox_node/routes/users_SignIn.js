@@ -6,9 +6,8 @@ var bcrypt = require("bcrypt");
 router.post('/', function(req, res, next) {
 
     var hash;
-    var email = req.body.signInUserData.email;
-    var password = req.body.signInUserData.password;
-    var userName;
+    var email = req.body.userData.email;
+    var password = req.body.userData.password;
 
     var getUser=" SELECT FirstName,Password FROM users WHERE EmailId='"+email+"'";
 
@@ -38,9 +37,11 @@ router.post('/', function(req, res, next) {
 
                     message = "valid SignIn";
 
-                    console.log(message);
+                    console.log(req.session);
 
-                    return res.json({ message: message});
+                    // return res.status(200).json({username: req.session.email});
+
+                    return res.json({status: 200, username: req.session.email});
 
                 }
 
@@ -51,7 +52,12 @@ router.post('/', function(req, res, next) {
 
                 console.log(message);
 
-                return res.json({ message: message});
+                // req.session.destroy();
+
+                return res.json({status: 401});
+
+                // return res.status(401).send();
+
             }
         }
     },getUser);

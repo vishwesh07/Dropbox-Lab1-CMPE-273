@@ -1,54 +1,33 @@
 import React,{Component} from 'react';
-import * as API from '../api/API_SignUp';
 import withRouter from "react-router-dom/es/withRouter";
+// import PropTypes from 'prop-types';
 
 class SignUp extends Component{
+
+    // static propTypes = {
+    //     handleSignUp: PropTypes.func.isRequired,
+    // };
 
     constructor(props) {
         super(props);
         this.state = {
-            signUpUserData: {
-                firstName: undefined,
-                lastName: undefined,
-                email: undefined,
-                password: undefined,
-            },
-            isSignedIn: undefined,
-            message: undefined
-        };
-    }
-
-    componentWillMount(){
-        this.setState({
-            signUpUserData: {
+            userData: {
                 firstName: '',
                 lastName: '',
                 email: '',
                 password: '',
             },
-            isSignedIn: this.props.isSignedIn,
-            message: ''
-        });
+        };
     }
 
-    handleSignUp = () => {
-        console.log("In hendleSignUp"+this.state);
-        API.doSignUp(this.state)
-            .then( (response) => {
-                    this.setState({
-                        ...this.state,
-                        message: response.message
-                    });
-                    this.props.handleIsSignedIn(this.state.signUpUserData.email);
-                    if(this.state.message === "Successful Sign up"){
-                        this.props.history.push("/SignIn");
-                    }
-            });
+    componentWillMount(){
     }
 
     render(){
 
-         return(
+        console.log("In RENDER SignUp");
+
+            return(
 
                 <div className="span3">
 
@@ -67,11 +46,11 @@ class SignUp extends Component{
                                 name="firstname"
                                 className="span3"
                                 placeholder="Enter First Name"
-                                required
+                                required="required"
                                 onChange={ (event) => {
                                     this.setState({
-                                        signUpUserData: {
-                                            ...this.state.signUpUserData,
+                                        userData: {
+                                            ...this.state.userData,
                                             firstName: event.target.value
                                         }
                                     });
@@ -86,11 +65,12 @@ class SignUp extends Component{
                                 name="lastname"
                                 className="span3"
                                 placeholder="Enter Last Name"
-                                value={this.state.signUpUserData.lastName}
+                                required="required"
+                                value={this.state.userData.lastName}
                                 onChange={ (event) => {
                                     this.setState({
-                                        signUpUserData: {
-                                            ...this.state.signUpUserData,
+                                        userData: {
+                                            ...this.state.userData,
                                             lastName: event.target.value
                                         }
                                     });
@@ -105,11 +85,12 @@ class SignUp extends Component{
                                 name="email"
                                 className="span3"
                                 placeholder="Enter Email Address"
-                                value={this.state.signUpUserData.email}
+                                required="required"
+                                value={this.state.userData.email}
                                 onChange={ (event) => {
                                     this.setState({
-                                        signUpUserData: {
-                                            ...this.state.signUpUserData,
+                                        userData: {
+                                            ...this.state.userData,
                                             email: event.target.value
                                         }
                                     });
@@ -124,11 +105,12 @@ class SignUp extends Component{
                                 name="password"
                                 className="span3"
                                 placeholder="Enter Password"
-                                value={this.state.signUpUserData.password}
+                                required="required"
+                                value={this.state.userData.password}
                                 onChange={ (event) => {
                                     this.setState({
-                                        signUpUserData: {
-                                            ...this.state.signUpUserData,
+                                        userData: {
+                                            ...this.state.userData,
                                             password: event.target.value
                                         }
                                     });
@@ -137,18 +119,13 @@ class SignUp extends Component{
                         </div>
 
                         <div className="form-group">
-                            <label><input type="checkbox" name="terms"/> I agree to <a href="#">Dropbox Terms</a>.</label>
+                            <label><input type="checkbox" name="terms"/> I agree to Dropbox Terms.</label>
                             <br/>
                             <input
                                 type="button"
                                 value="Sign up"
                                 className="btn btn-primary"
-                                onClick={() =>
-                                    this.setState({
-                                            ...this.state,
-                                        },
-                                        function(){this.handleSignUp()})
-                                }
+                                onClick={() => this.props.handleSignUp(this.state)}
                             />
                         </div>
 
@@ -166,11 +143,11 @@ class SignUp extends Component{
                     </form>
 
                     <div className="col-md-12">
-                        {this.state.message && (
+                        {this.props.message && (
                             <div  className="alert alert-warning" role="alert">
                                 <b>Result :</b>
                                 <br/>
-                                {this.state.message}
+                                {this.props.message}
                             </div>
                         )}
                     </div>
@@ -179,6 +156,7 @@ class SignUp extends Component{
             );
 
         }
+
 
 }
 

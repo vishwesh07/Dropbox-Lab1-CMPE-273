@@ -1,19 +1,22 @@
-import axios from 'axios';
 
 const api = process.env.REACT_APP_CONTACTS_API_URL || 'http://localhost:3004'
 
+const headers = {
+    'Accept': 'application/json'
+};
+
 export const doSignUp = (payload) =>
 
-    axios({
+    fetch(`${api}/SignUp`, {
         method: 'POST',
-        url: api+'/SignUp',
         headers: {
+            ...headers,
             'Content-Type': 'application/json'
         },
-        credentials:'include',
-        data: payload
+        credentials: 'include',
+        body: JSON.stringify(payload)
     }).then( res => {
-        return res.data;
+        return res.json();
     })
         .catch(error => {
             console.log("This is error");

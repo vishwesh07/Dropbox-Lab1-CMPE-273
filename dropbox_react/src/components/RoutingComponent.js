@@ -1,8 +1,12 @@
 import React, {Component} from 'react';
 import { Route, withRouter } from 'react-router-dom';
 import SignUp from "./SignUp";
+import * as API_SignUp from '../api/API_SignUp';
 import SignIn from "./SignIn";
-import Homepage from "./Homepage";
+import * as API_SignIn from '../api/API_SignIn';
+// import * as API_IsSignedIn from "../api/API_IsSignedIn";
+import Homepage from "./HomePage";
+import * as API_SignOut from "../api/API_SignOut";
 
 class RoutingComponent extends Component {
 
@@ -10,44 +14,175 @@ class RoutingComponent extends Component {
         super(props);
         this.state = {
             isSignedIn: false,
-            message: '',
-            email: ''
+            signInMessage: undefined,
+            signUpMessage: undefined,
+            email: '',
+            username: ''
         };
     }
 
-    handleIsSignedIn = (email) => {
-        // API.doSignUp(this.state)
-        //     .then( (response) => {
-        //         this.setState({
-        //             ...this.state,
-        //             message: response.message
-        //         });
-        //         this.props.handleIsSignedIn();
-        //         this.props.history.push("/SignIn");
-        //     });
+    // handleIsSignedIn = () => {
+    //
+    //     console.log("In handle IsSignedIn, isSignedIn ="+this.state.isSignedIn)
+    //
+    //     if(!this.state.isSignedIn)
+    //     {
+    //         API_IsSignedIn.checkIsSignedIn()
+    //             .then( (response) => {
+    //
+    //                 if(response.status === 304){
+    //
+    //                     this.setState( (state) =>{
+    //                         state.isSignedIn = true;
+    //                         state.username = response.username;
+    //                     });
+    //
+    //                     console.log("In handle IsSignedIn, status = "+ response.status+" isSignedIn = "+this.state.isSignedIn+" remaining in same page"+response.username);
+    //
+    //                     return response;
+    //                 }
+    //
+    //
+    //                 else{
+    //
+    //                     this.setState( (state) =>{
+    //                         state.isSignedIn = false;
+    //                         state.username = '';
+    //                     });
+    //
+    //                     console.log("In handle IsSignedIn, status = "+ response.status+" isSignedIn = "+this.state.isSignedIn+" pushing to SignIn");
+    //
+    //                     return response;
+    //                 }
+    //                 return response;
+    //             });
+    //     }
+    //
+    //
+    // }
+
+    handleSignUp = (state) => {
+
+        console.log("In handle SignUp, isSignedIn ="+this.state.isSignedIn)
+
+        API_SignUp.doSignUp(state)
+            .then( (response) => {
+
+                if(response.status === 200){
+
+                    this.setState({
+                        ...this.state,
+                        isSignedIn: true,
+                        signUpMessage: undefined,
+                        signInMessage: undefined,
+                        username: response.username
+                    });
+
+                    console.log("In handle SignUp, status = "+ response.status+" isSignedIn = "+this.state.isSignedIn+" pushing to HomePage");
+
+                    this.props.history.push("/HomePage");
+                }
+
+                else if(response.status === 401){
+
+                    this.setState({
+                        ...this.state,
+                        isSignedIn: false,
+                        signInMessage: undefined,
+                        username: '',
+                        signUpMessage: 'User Already Exists'
+                    });
+
+                }
+
+            });
+    }
+
+    handleSignIn = (state) => {
+
+        console.log("In handle SignIn, isSignedIn ="+this.state.isSignedIn)
+
+        API_SignIn.doSignIn(state)
+            .then( (response) => {
+
+                console.log("In response of Sign In : "+response.status);
+
+                if(response.status === 200){
+
+                    this.setState({
+                        ...this.state,
+                        isSignedIn: true,
+                        signInMessage: undefined,
+                        signUpMessage: undefined,
+                        username: response.username
+                    });
+
+                    console.log("usernameSet : "+this.state.username);
+
+                    this.props.history.push("/HomePage");
+                }
+
+                else if(response.status === 401){
+
+                    this.setState({
+                        ...this.state,
+                        isSignedIn: false,
+                        signUpMessage: undefined,
+                        username: '',
+                        signInMessage: 'Invalid Username or Password'
+                    });
+
+                    console.log("In handle SignIn, status = "+ response.status+" isSignedIn = "+this.state.isSignedIn+" remaining in same page");
+
+                }
+            });
+    }
+
+    handleSignOut = () => {
+
+        API_SignOut.doSignOut()
+            .then( (response) => {
+
+                if(response.status === 304){
+
+                    this.setState({
+                        ...this.state,
+                        isSignedIn: false,
+                        signInMessage: undefined,
+                        signUpMessage: undefined,
+                        username: undefined
+                    });
+
+                    console.log("usernameUnSet : "+this.state.username);
+
+                    this.props.history.push("/");
+                }
+            });
     }
 
     render() {
         return (
+
             <div className="container-fluid">
 
-              <Route exact path="/" render={() => (
-                    <SignUp isSignedIn={this.props.isSignedIn}  handleIsSignedIn={this.handleIsSignedIn.bind(this)}/>
+                <Route exact path="/" render={() => (
+                    <SignIn message={this.state.signInMessage} username={this.state.username} handleSignIn={this.handleSignIn} />
                 )}/>
 
                 <Route exact path="/SignUp" render={() => (
-                    <SignUp isSignedIn={this.props.isSignedIn} handleIsSignedIn={this.handleIsSignedIn.bind(this)}/>
+                    <SignUp message={this.state.signUpMessage} username={this.state.username} handleSignUp={this.handleSignUp} />
                 )}/>
 
                 <Route exact path="/SignIn" render={() => (
-                    <SignIn isSignedIn={this.props.isSignedIn} handleIsSignedIn={this.handleIsSignedIn.bind(this)}/>
+                    <SignIn message={this.state.signInMessage} username={this.state.username} handleSignIn={this.handleSignIn} />
                 )}/>
 
                 <Route exact path="/HomePage" render={() => (
-                    <Homepage isSignedIn={this.props.isSignedIn} handleIsSignedIn={this.handleIsSignedIn.bind(this)}/>
+                    <Homepage username={this.state.username} handleSignOut={this.handleSignOut} />
                 )}/>
 
             </div>
+
         );
     }
 }

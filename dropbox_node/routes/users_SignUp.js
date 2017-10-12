@@ -2,13 +2,15 @@ var express = require('express');
 var router = express.Router();
 var mysql = require('./mysql');
 var bcrypt = require('bcrypt');
+var shelljs = require('shelljs');
+var path=require('path');
 
 router.post('/SignUp', function(req, res, next) {
 
-    var email = req.body.signUpUserData.email;
-    var firstName = req.body.signUpUserData.firstName;
-    var lastName = req.body.signUpUserData.lastName;
-    var password = req.body.signUpUserData.password;
+    var email = req.body.userData.email;
+    var firstName = req.body.userData.firstName;
+    var lastName = req.body.userData.lastName;
+    var password = req.body.userData.password;
 
     var getUser="SELECT * FROM users WHERE EmailId='"+email+"'";
 
@@ -26,7 +28,7 @@ router.post('/SignUp', function(req, res, next) {
                 console.log(message);
 
                 //Send message: "User already exists" back as response and render message variable.
-                return res.json({message: message});
+                return res.json({status:401, message: message});
 
             }
 
@@ -38,6 +40,12 @@ router.post('/SignUp', function(req, res, next) {
                 var hash = bcrypt.hashSync(password, salt);
 
                 var setUser="INSERT INTO users (FirstName, LastName, EmailId, Password, Salt) VALUES ('" + firstName +"' , '"+ lastName +"' , '"+ email +"' , '"+ hash +"' , '"+salt+ "')";
+
+                var uploadpath=path.resolve(__dirname,'../','public','upload');
+
+                console.log(uploadpath);
+
+                shelljs.mkdir(uploadpath+"/"+email);
 
                 console.log("Valid SignUp");
 
@@ -59,8 +67,11 @@ router.post('/SignUp', function(req, res, next) {
                         var message = "Successful Sign up";
 
                         //Send message: "Successful Sign up" back as response and render message variable.
-                        return res.json({ message: message});
+                        // return res.json({ message: message});
 
+                        //res.status(200).send({username: req.session.email});
+
+                        return res.json({status: 200, username: req.session.email});
                     }
                 },setUser);
             }

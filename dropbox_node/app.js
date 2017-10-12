@@ -1,25 +1,26 @@
 var express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('client-sessions');
 var user_signUp = require('./routes/users_SignUp');
 var user_signIn = require('./routes/users_SignIn');
-var user_signOut = require('./routes/users_SignOut');
+var user_File = require('./routes/user_File');
+var user_IsSignedIn = require('./routes/user_IsSignedIn');
+var user_signOut = require('./routes/user_SignOut');
 var cors = require('cors');
 
 var app = express();
-
-//Enable CORS
-app.use(cors());
 
 var corsOptions = {
     origin: 'http://localhost:3003',
     credentials: true,
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
+
+//Enable CORS
+app.use(cors(corsOptions));
 
 //Session Management
 app.use(session({
@@ -44,6 +45,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 //Routes
 app.use('/', user_signUp);
 app.use('/SignIn', user_signIn);
+app.use('/IsSignedIn', user_IsSignedIn);
+app.use('/files', user_File);
 app.use('/SignOut', user_signOut);
 
 // catch 404 and forward to error handler
