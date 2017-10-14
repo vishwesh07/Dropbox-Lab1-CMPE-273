@@ -11,13 +11,15 @@ class HomePage extends Component{
             userData: {
                 email: '',     // problem
                 username: '',
-                user_files: []
+                user_docs: []
             },
         };
     }
 
     componentWillMount(){
-        // this.props.handleIsSignedIn()
+        if(this.props.username === undefined){
+            this.props.history.push("/");
+        }
     }
 
     componentDidMount() {
@@ -25,7 +27,7 @@ class HomePage extends Component{
             .then((data) => {
                 console.log(data);
                 this.setState({
-                    user_files: data
+                    user_docs: data
                 });
             });
     };
@@ -43,7 +45,7 @@ class HomePage extends Component{
                     API_File.getFiles()
                         .then((data) => {
                             this.setState({
-                                user_files: data
+                                user_docs: data
                             });
                         });
                 }
@@ -83,19 +85,16 @@ class HomePage extends Component{
 
                         <br/> <br/>
 
-                        <input
-                            className={'fileupload'}
-                            type="file"
-                            name="myfile"
-                            onChange={this.handleFileUpload}
-                            // multiple={"multiple"}
-                        />
+                        <div class="upload-btn-wrapper">
+                            <button class="btn">Upload a file</button>
+                            <input className={'fileupload'} type="file" name="myfile" onChange={this.handleFileUpload}/>
+                        </div>
 
-                        {/*{this.state.images.map(tile => (*/}
-                            {/*<p>*/}
-                                {/*<img src={'http://localhost:3001/'+tile.img} alt={'myimage'}/>*/}
-                            {/*</p>*/}
-                        {/*))}*/}
+                        {this.state.user_docs && (this.state.user_docs.map(doc => (
+                            <p>
+                                {doc.DocName}
+                            </p>
+                        )))}
 
                     </div>
 

@@ -7,7 +7,7 @@ router.get('/', function(req, res, next) {
 
             console.log(req.session.username);
 
-            res.status(304).send({username: req.session.username});
+            res.status(304).send({username: req.session.username, email: req.session.email});
 
         }
 

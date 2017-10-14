@@ -16,8 +16,8 @@ class RoutingComponent extends Component {
             isSignedIn: false,
             signInMessage: undefined,
             signUpMessage: undefined,
-            email: '',
-            username: ''
+            email: undefined,
+            username: undefined
         };
     }
 
@@ -75,6 +75,7 @@ class RoutingComponent extends Component {
                         isSignedIn: true,
                         signUpMessage: undefined,
                         signInMessage: undefined,
+                        email: response.email,
                         username: response.username
                     });
 
@@ -89,8 +90,22 @@ class RoutingComponent extends Component {
                         ...this.state,
                         isSignedIn: false,
                         signInMessage: undefined,
-                        username: '',
+                        username: undefined,
+                        email: undefined,
                         signUpMessage: 'User Already Exists'
+                    });
+
+                }
+
+                else if(response.status === 303){
+
+                    this.setState({
+                        ...this.state,
+                        isSignedIn: false,
+                        signInMessage: undefined,
+                        username: undefined,
+                        email: undefined,
+                        signUpMessage: '!! Required Fields are not filled !! '
                     });
 
                 }
@@ -114,6 +129,7 @@ class RoutingComponent extends Component {
                         isSignedIn: true,
                         signInMessage: undefined,
                         signUpMessage: undefined,
+                        email: response.email,
                         username: response.username
                     });
 
@@ -128,13 +144,28 @@ class RoutingComponent extends Component {
                         ...this.state,
                         isSignedIn: false,
                         signUpMessage: undefined,
-                        username: '',
+                        username: undefined,
+                        email: undefined,
                         signInMessage: 'Invalid Username or Password'
                     });
 
                     console.log("In handle SignIn, status = "+ response.status+" isSignedIn = "+this.state.isSignedIn+" remaining in same page");
 
                 }
+
+                else if(response.status === 303){
+
+                    this.setState({
+                        ...this.state,
+                        isSignedIn: false,
+                        signUpMessage : undefined,
+                        username: undefined,
+                        email: undefined,
+                        signInMessage: '!! Required Fields are not filled !! '
+                    });
+
+                }
+
             });
     }
 
@@ -150,6 +181,7 @@ class RoutingComponent extends Component {
                         isSignedIn: false,
                         signInMessage: undefined,
                         signUpMessage: undefined,
+                        email: undefined,
                         username: undefined
                     });
 
@@ -178,7 +210,7 @@ class RoutingComponent extends Component {
                 )}/>
 
                 <Route exact path="/HomePage" render={() => (
-                    <Homepage username={this.state.username} handleSignOut={this.handleSignOut} />
+                    <Homepage email={this.state.email} username={this.state.username} handleSignOut={this.handleSignOut} />
                 )}/>
 
             </div>

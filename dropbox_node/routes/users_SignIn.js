@@ -9,6 +9,10 @@ router.post('/', function(req, res, next) {
     var email = req.body.userData.email;
     var password = req.body.userData.password;
 
+    if(email === '' || password === '' ){
+        return res.status(303).send({status:303});
+    }
+
     var getUser=" SELECT FirstName,Password FROM users WHERE EmailId='"+email+"'";
 
     console.log("Query is:"+getUser);
@@ -23,7 +27,13 @@ router.post('/', function(req, res, next) {
         {
             console.log(results.length);
 
+
             if(results.length === 1){
+
+                hash =  results[0].Password;
+
+                var b = bcrypt.compareSync(password, hash);
+
 
                 //Assigning the session
                 req.session.email = email;
@@ -31,19 +41,31 @@ router.post('/', function(req, res, next) {
 
                 console.log("Session initialized from SignIn");
 
-                hash =  results[0].Password;
 
-                if(bcrypt.compareSync(password, hash)){
+                if(b){
 
                     message = "valid SignIn";
 
                     console.log(req.session);
 
-                    // return res.status(200).json({username: req.session.email});
+                    var activityQuery = "INSERT INTO user_activity (ActivityName, EmailId) VALUES ('Signed In' , '"+ email +"')";
 
-                    return res.json({status: 200, username: req.session.email});
+                    mysql.dbOperation(function(err,results){
+                        if(err){
+                            throw err;
+                        }
+                        else {
+                            console.log("Activity added from Sign In");
+                        }
+                    },activityQuery);
+
+                    return res.json({status: 200, username:  req.session.username , email: req.session.email});
 
                 }
+                else{
+                    return res.json({status: 401});
+                }
+
 
             }
             else {

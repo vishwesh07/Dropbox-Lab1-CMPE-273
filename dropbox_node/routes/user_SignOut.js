@@ -1,9 +1,21 @@
 var express = require('express');
+var mysql = require("./mysql");
 var router = express.Router();
 
 router.get('/', function(req, res, next) {
 
     var message;
+
+    var activityQuery = "INSERT INTO user_activity (ActivityName, EmailId) VALUES ('Signed Out' , '"+ req.session.email +"')";
+
+    mysql.dbOperation(function(err,results){
+        if(err){
+            throw err;
+        }
+        else {
+            console.log("Activity added from Sign In");
+        }
+    },activityQuery);
 
     //Reset the session
     req.session.destroy();

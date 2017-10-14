@@ -29,9 +29,11 @@ class SignUp extends Component{
 
             return(
 
+                <div className="container-fluid">
+                    <div className="row justify-content-md-center">
                 <div className="span3">
 
-                    <br/> <br/> <br/>
+                    <br/> <br/> <br/> <br/> <br/> <br/>
 
                     <form>
 
@@ -39,14 +41,23 @@ class SignUp extends Component{
                             <h2>Sign Up</h2>
                         </div>
 
+                        <div className="col-md-12">
+                            {this.props.message && (
+                                <div  className="alert alert-warning" role="alert">
+                                    {this.props.message}
+                                </div>
+                            )}
+                        </div>
+
                         <div className="form-group">
-                            <label>First Name</label>
+                            <label>First Name *</label>
+                            &nbsp; &nbsp; &nbsp;
                             <input
                                 type="name"
                                 name="firstname"
                                 className="span3"
                                 placeholder="Enter First Name"
-                                required="required"
+                                autoFocus="autoFocus"
                                 onChange={ (event) => {
                                     this.setState({
                                         userData: {
@@ -59,7 +70,8 @@ class SignUp extends Component{
                         </div>
 
                         <div className="form-group">
-                            <label>Last Name</label>
+                            <label>Last Name *</label>
+                            &nbsp; &nbsp; &nbsp;
                             <input
                                 type="name"
                                 name="lastname"
@@ -79,7 +91,8 @@ class SignUp extends Component{
                         </div>
 
                         <div className="form-group">
-                            <label>Email </label>
+                            <label>Email *</label>
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                             <input
                                 type="email"
                                 name="email"
@@ -99,7 +112,8 @@ class SignUp extends Component{
                         </div>
 
                         <div className="form-group">
-                            <label>Password</label>
+                            <label>Password *</label>
+                            &nbsp; &nbsp; &nbsp; &nbsp;
                             <input
                                 type="password"
                                 name="password"
@@ -125,15 +139,14 @@ class SignUp extends Component{
                                 type="button"
                                 value="Sign up"
                                 className="btn btn-primary"
+                                style={{float: 'right'}}
                                 onClick={() => this.props.handleSignUp(this.state)}
                             />
-                        </div>
-
-                        <div className="form-group">
                             <input
                                 type="button"
                                 value="Sign In"
                                 className="btn btn-primary"
+                                style={{float: 'left'}}
                                 onClick={() => {
                                     this.props.history.push("/SignIn");
                                 }}
@@ -142,17 +155,9 @@ class SignUp extends Component{
 
                     </form>
 
-                    <div className="col-md-12">
-                        {this.props.message && (
-                            <div  className="alert alert-warning" role="alert">
-                                <b>Result :</b>
-                                <br/>
-                                {this.props.message}
-                            </div>
-                        )}
-                    </div>
-
                 </div>
+                </div>
+            </div>
             );
 
         }

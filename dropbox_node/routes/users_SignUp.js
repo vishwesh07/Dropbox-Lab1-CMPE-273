@@ -12,6 +12,12 @@ router.post('/SignUp', function(req, res, next) {
     var lastName = req.body.userData.lastName;
     var password = req.body.userData.password;
 
+    console.log("email"+email);
+
+    if(email === '' || firstName === '' || lastName === '' || password === '' ){
+        return res.status(303).send({status:303});
+    }
+
     var getUser="SELECT * FROM users WHERE EmailId='"+email+"'";
 
     mysql.dbOperation(function(err,results){
@@ -66,12 +72,18 @@ router.post('/SignUp', function(req, res, next) {
 
                         var message = "Successful Sign up";
 
-                        //Send message: "Successful Sign up" back as response and render message variable.
-                        // return res.json({ message: message});
+                        var activityQuery = "INSERT INTO user_activity (ActivityName, EmailId) VALUES ('Signed Up' , '"+ email +"')";
 
-                        //res.status(200).send({username: req.session.email});
+                        mysql.dbOperation(function(err,results){
+                            if(err){
+                                throw err;
+                            }
+                            else {
+                                console.log("Activity added from Sign Up");
+                            }
+                        },activityQuery);
 
-                        return res.json({status: 200, username: req.session.email});
+                        return res.json({status: 200, username: req.session.username , email: req.session.email});
                     }
                 },setUser);
             }
