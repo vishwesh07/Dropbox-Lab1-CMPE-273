@@ -23,6 +23,7 @@ function dbOperation(callback,sqlQuery){
         connection.query(sqlQuery, function (err, rows, fields) {
             if (err) {
                 console.log("\n ERROR: " + err.message);
+                connection.release();
             }
             else {
                 console.log("\n DB Results : " + rows.length);

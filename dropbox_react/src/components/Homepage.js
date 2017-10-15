@@ -128,12 +128,31 @@ class HomePage extends Component{
 
     navigateFolder = (event) => {
         console.log("In navigateFolder");
+
+        console.log("In navigate :"+this.st.currentPath);
+
         let folder = event.target.value;
         let navigationPath = this.st.currentPath+folder +"/";
         this.st = {currentPath: navigationPath};
         console.log("New Path"+ navigationPath);
         console.log("In Navigate Folder "+this.st.currentPath);
         API_GetFiles.getDocs(this.st)
+            .then((data) => {
+                console.log(data);
+                this.setState({
+                    ...this.state,
+                    user_docs: data
+                });
+            });
+    };
+
+    navigateBackFolder = (st) => {
+        let folder = st.currentPath;
+        let parentFolder = folder.substr(0, folder.lastIndexOf('/'));
+        console.log(parentFolder);
+        st.currentPath = parentFolder.substr(0, parentFolder.lastIndexOf('/')) + "/";
+        console.log("In navigate back"+st.currentPath);
+        API_GetFiles.getDocs(st)
             .then((data) => {
                 console.log(data);
                 this.setState({
@@ -161,96 +180,119 @@ class HomePage extends Component{
         }
     };
 
+    displayBackButton = () =>{
+        if(this.st.currentPath === './public/upload/'+ this.props.email +'/'){
+            return (<td></td>);
+        }
+        else{
+            return (<td> Go Back :  <button type="button" className="btn btn-link" onClick = {() => this.navigateBackFolder(this.st)} > ... </button> </td>);
+        }
+    }
+
     render() {
 
         console.log("In RENDER HomePage");
 
         return (
 
-            <div className="container-fluid">
+                    <div className="container-fluid">
+                        <div className="row">
+                            <div className="col-sm-3 col-md-2 sidebar">
 
-                <div className="row">
+                                <br/> <br/>
 
-                    <div className="col-sm-offset-2 col-md-offset-2 col-lg-offset-2 col-sm-2 col-md-2 col-lg-2" style={{border: "10px"}}>
+                                <input
+                                    type="button"
+                                    value="Sign Out"
+                                    className="btn btn-primary"
+                                    onClick={this.props.handleSignOut}
+                                />
 
-                    </div>
+                                <br/> <br/>
 
-                    <div className="col-sm-offset-8 col-md-offset-8 col-lg-offset-8 col-sm-8 col-md-8 col-lg-8">
-                        <br/> <br/> <br/> <br/>
+                                {this.state.message}
 
-                        <input
-                            type="button"
-                            value="Sign Out"
-                            className="btn btn-primary"
-                            onClick={this.props.handleSignOut}
-                        />
+                                <div className="form-group">
+                                    <label>Folder Name *</label>
+                                    &nbsp; &nbsp; &nbsp;
+                                    <input
+                                        type="text"
+                                        name="folderName"
+                                        className="span3"
+                                        placeholder="Enter Folder Name"
+                                        required="required"
+                                        autoFocus="autoFocus"
+                                        onChange={(event) => {
+                                            this.setState({
+                                                ...this.state,
+                                                foldername: event.target.value
+                                            });
+                                        }}
+                                    />
+                                </div>
 
-                        <br/> <br/>
+                                <input
+                                    type="button"
+                                    value="Create Folder"
+                                    className="btn"
+                                    onClick={this.handleFolderCreation}
+                                />
 
-                        Welcome
+                                <br/> <br/>
 
-                        <br/> {this.props.username}
+                                <div className="upload-btn-wrapper">
+                                    <button className="btn">Upload a file</button>
+                                    <input className={'fileupload'} type="file" name="myfile" onChange={this.handleFileUpload}/>
+                                </div>
 
-                        <br/> <br/>
+                            </div>
+                            <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                                <h1 className="page-header">
+                                    <br/> <br/>
 
-                        {this.state.message}
+                                    Welcome
 
-                        <div className="form-group">
-                            <label>Folder Name *</label>
-                            &nbsp; &nbsp; &nbsp;
-                            <input
-                                type="text"
-                                name="folderName"
-                                className="span3"
-                                placeholder="Enter Folder Name"
-                                required="required"
-                                autoFocus="autoFocus"
-                                onChange={(event) => {
-                                    this.setState({
-                                        ...this.state,
-                                        foldername: event.target.value
-                                    });
-                                }}
-                            />
+                                    <br/> {this.props.username}
+
+                                </h1>
+
+                                <br/> <br/>
+
+                                Current Path : {this.st.currentPath}
+
+                                <br/> <br/>
+
+                                <div className="table-responsive">
+                                    <table className="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Favorite</th>
+                                            <th>DocName</th>
+                                            <th>Owner</th>
+                                            <th>DocPath</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            {this.displayBackButton()}
+                                            <td></td>
+                                        </tr>
+                                        {this.state.user_docs && (this.state.user_docs.map(doc => (
+                                            <tr>
+                                                <td>{this.displayStar(doc)}</td>
+                                                <td>{this.displayDocument(doc)}</td>
+                                                <td>{this.props.username}</td>
+                                                <td>{doc.DocPath}</td>
+                                            </tr>
+                                        )))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
-
-                        <input
-                            type="button"
-                            value="Create Folder"
-                            class="btn"
-                            onClick={this.handleFolderCreation}
-                        />
-
-                        <br/> <br/>
-
-                        <div class="upload-btn-wrapper">
-                            <button class="btn">Upload a file</button>
-                            <input className={'fileupload'} type="file" name="myfile" onChange={this.handleFileUpload}/>
-                        </div>
-
-                        <br/> <br/>
-
-                        Current Path : {this.st.currentPath}
-
-                        <br/> <br/>
-
-                        {this.state.user_docs && (this.state.user_docs.map(doc => (
-                            <p>
-                                {this.displayStar(doc)}
-                                &nbsp; &nbsp; &nbsp; &nbsp;
-                                {this.displayDocument(doc)}
-                            </p>
-                        )))}
-
                     </div>
-
-                    <div className="col-sm-offset-2 col-md-offset-2 col-lg-offset-2 col-sm-2 col-md-2 col-lg-2">
-
-                    </div>
-
-                </div>
-
-            </div>
 
         );
 
