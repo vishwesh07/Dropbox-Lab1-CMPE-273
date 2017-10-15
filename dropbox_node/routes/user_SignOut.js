@@ -13,7 +13,7 @@ router.get('/', function(req, res, next) {
             throw err;
         }
         else {
-            console.log("Activity added from Sign In");
+            console.log("Activity added from Sign out");
         }
     },activityQuery);
 

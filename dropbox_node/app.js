@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 var session = require('client-sessions');
 var user_signUp = require('./routes/users_SignUp');
 var user_signIn = require('./routes/users_SignIn');
-var user_File = require('./routes/user_File');
+var user_docs = require('./routes/user_docs');
 var user_IsSignedIn = require('./routes/user_IsSignedIn');
 var user_signOut = require('./routes/user_SignOut');
 var cors = require('cors');
@@ -46,7 +46,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', user_signUp);
 app.use('/SignIn', user_signIn);
 app.use('/IsSignedIn', user_IsSignedIn);
-app.use('/files', user_File);
+app.use('/docs', user_docs);
 app.use('/SignOut', user_signOut);
 
 // catch 404 and forward to error handler

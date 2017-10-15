@@ -5,6 +5,8 @@ var bcrypt = require("bcrypt");
 
 router.post('/', function(req, res, next) {
 
+    console.log(req.body);
+
     var hash;
     var email = req.body.userData.email;
     var password = req.body.userData.password;
@@ -27,13 +29,11 @@ router.post('/', function(req, res, next) {
         {
             console.log(results.length);
 
-
             if(results.length === 1){
 
                 hash =  results[0].Password;
 
                 var b = bcrypt.compareSync(password, hash);
-
 
                 //Assigning the session
                 req.session.email = email;

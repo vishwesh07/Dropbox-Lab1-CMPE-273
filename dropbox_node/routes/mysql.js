@@ -3,7 +3,7 @@ var mysql = require('mysql');
 //Put your mysql configuration settings - user, password, database and port
 function getConnection(){
     var connection = mysql.createPool({
-        connecitonLimit : 10,
+        connecitonLimit : 20,
         host     : 'localhost',
         user     : 'root',
         password : '#VishwesH@07#',
@@ -25,13 +25,12 @@ function dbOperation(callback,sqlQuery){
                 console.log("\n ERROR: " + err.message);
             }
             else {
-                // return err or result
                 console.log("\n DB Results : " + rows.length);
                 callback(err, rows);
             }
             console.log("\n Connection closed.");
-            connection.release();
         });
+        connection.release();
     });
 }
 

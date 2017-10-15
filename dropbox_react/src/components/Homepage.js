@@ -1,18 +1,21 @@
 import React,{Component} from 'react';
 import { withRouter } from 'react-router-dom';
-import * as API_File from '../api/API_File';
-// import PropTypes from 'prop-types';
+import * as API_Docs from '../api/API_Docs';
 
 class HomePage extends Component{
 
     constructor(props) {
         super(props);
+        this.st = {currentPath: './public/upload/'+ this.props.email +'/'};
         this.state = {
             userData: {
                 email: '',     // problem
                 username: '',
                 user_docs: []
             },
+            message: '',
+            foldername : '',
+            currentPath : './public/upload/'+ this.props.email +'/'
         };
     }
 
@@ -23,11 +26,16 @@ class HomePage extends Component{
     }
 
     componentDidMount() {
-        API_File.getFiles()
+
+        var state = this.state;
+        console.log("In Did Mount "+state.currentPath);
+
+        API_Docs.getDocs(state)
             .then((data) => {
                 console.log(data);
                 this.setState({
-                    user_docs: data
+                        ...this.state,
+                        user_docs: data
                 });
             });
     };
@@ -38,19 +46,90 @@ class HomePage extends Component{
 
         payload.append('myfile', event.target.files[0]);
 
-        API_File.uploadFile(payload)
+        API_Docs.uploadFile(payload)
             .then((status) => {
 
                 if (status === 204) {
-                    API_File.getFiles()
+                    API_Docs.getDocs(this.st)
                         .then((data) => {
                             this.setState({
-                                user_docs: data
+                                ...this.state,
+                                user_docs: data,
                             });
                         });
                 }
 
+                else if(status === 304){
+                    this.setState({
+                        ...this.state,
+                        message: '!! Similar file already exists. !!'
+                    });
+                }
+
             });
+    };
+
+    handleFolderCreation = () => {
+
+        this.st.foldername = this.state.foldername;
+
+        console.log("In handleFolderCreation "+this.st.currentPath+" "+this.st.foldername);
+
+        API_Docs.createFolder(this.st)
+            .then((status) => {
+
+                if (status === 204) {
+                    API_Docs.getDocs(this.st)
+                        .then((data) => {
+                            this.setState({
+                                ...this.state,
+                                user_docs: data,
+                                message: ''
+                            });
+                        });
+                }
+
+                else if(status === 303){
+                    this.setState({
+                        ...this.state,
+                        message: '!! Required Fields are not filled !!'
+                    });
+                }
+
+                else if(status === 304){
+                    this.setState({
+                        ...this.state,
+                        message: '!! Similar folder already exists. !!'
+                    });
+                }
+
+            });
+    };
+
+    navigateFolder = (event) => {
+        console.log("In navigateFolder");
+        let folder = event.target.value;
+        let navigationPath = this.st.currentPath+folder +"/";
+        this.st = {currentPath: navigationPath};
+        console.log("New Path"+ navigationPath);
+        console.log("In Navigate Folder "+this.st.currentPath);
+        API_Docs.getDocs(this.st)
+            .then((data) => {
+                console.log(data);
+                this.setState({
+                    ...this.state,
+                    user_docs: data
+                });
+            });
+    };
+
+    displayDocument = (doc) => {
+        if(doc.DocType === "folder"){
+            return ( <button type="button" class="btn btn-link" onClick = {(event) => this.navigateFolder(event)} value={doc.DocName} > {doc.DocName} </button>);
+        }
+        else{
+            return doc.DocName   ;
+        }
     };
 
     render() {
@@ -85,14 +164,46 @@ class HomePage extends Component{
 
                         <br/> <br/>
 
+                        {this.state.message}
+
+                        <div className="form-group">
+                            <label>Folder Name *</label>
+                            &nbsp; &nbsp; &nbsp;
+                            <input
+                                type="text"
+                                name="folderName"
+                                className="span3"
+                                placeholder="Enter Folder Name"
+                                required="required"
+                                autoFocus="autoFocus"
+                                onChange={(event) => {
+                                    this.setState({
+                                        ...this.state,
+                                        foldername: event.target.value
+                                    });
+                                }}
+                            />
+                        </div>
+
+                        <input
+                            type="button"
+                            value="Create Folder"
+                            class="btn"
+                            onClick={this.handleFolderCreation}
+                        />
+
+                        <br/> <br/>
+
                         <div class="upload-btn-wrapper">
                             <button class="btn">Upload a file</button>
                             <input className={'fileupload'} type="file" name="myfile" onChange={this.handleFileUpload}/>
                         </div>
 
+                        <br/> <br/>
+
                         {this.state.user_docs && (this.state.user_docs.map(doc => (
                             <p>
-                                {doc.DocName}
+                                {this.displayDocument(doc)}
                             </p>
                         )))}
 
