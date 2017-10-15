@@ -1,6 +1,12 @@
 import React,{Component} from 'react';
 import { withRouter } from 'react-router-dom';
-import * as API_Docs from '../api/API_Docs';
+// import * as API_Docs from '../api/API_Docs';
+import * as API_UploadFile from '../api/API_UploadFile';
+import * as API_CreateFolder from '../api/API_CreateFolder';
+import * as API_GetFiles from '../api/API_GetFiles';
+import * as API_StarAction from '../api/API_StarAction';
+import strImg from '../components/stared.jpg';
+import unstrImg from '../components/unstared.png';
 
 class HomePage extends Component{
 
@@ -27,10 +33,10 @@ class HomePage extends Component{
 
     componentDidMount() {
 
-        var state = this.state;
+        let state = this.state;
         console.log("In Did Mount "+state.currentPath);
 
-        API_Docs.getDocs(state)
+        API_GetFiles.getDocs(state)
             .then((data) => {
                 console.log(data);
                 this.setState({
@@ -46,11 +52,11 @@ class HomePage extends Component{
 
         payload.append('myfile', event.target.files[0]);
 
-        API_Docs.uploadFile(payload)
+        API_UploadFile.uploadFile(payload)
             .then((status) => {
 
                 if (status === 204) {
-                    API_Docs.getDocs(this.st)
+                    API_GetFiles.getDocs(this.st)
                         .then((data) => {
                             this.setState({
                                 ...this.state,
@@ -75,11 +81,11 @@ class HomePage extends Component{
 
         console.log("In handleFolderCreation "+this.st.currentPath+" "+this.st.foldername);
 
-        API_Docs.createFolder(this.st)
+        API_CreateFolder.createFolder(this.st)
             .then((status) => {
 
                 if (status === 204) {
-                    API_Docs.getDocs(this.st)
+                    API_GetFiles.getDocs(this.st)
                         .then((data) => {
                             this.setState({
                                 ...this.state,
@@ -106,6 +112,20 @@ class HomePage extends Component{
             });
     };
 
+    handleStarAction = (doc) => {
+        API_StarAction.starAction(doc)
+            .then(() => {
+                API_GetFiles.getDocs(this.st)
+                    .then((data) => {
+                        console.log(data);
+                        this.setState({
+                            ...this.state,
+                            user_docs: data
+                        });
+                    });
+        });
+    };
+
     navigateFolder = (event) => {
         console.log("In navigateFolder");
         let folder = event.target.value;
@@ -113,7 +133,7 @@ class HomePage extends Component{
         this.st = {currentPath: navigationPath};
         console.log("New Path"+ navigationPath);
         console.log("In Navigate Folder "+this.st.currentPath);
-        API_Docs.getDocs(this.st)
+        API_GetFiles.getDocs(this.st)
             .then((data) => {
                 console.log(data);
                 this.setState({
@@ -123,9 +143,18 @@ class HomePage extends Component{
             });
     };
 
+    displayStar = (doc) => {
+        if(doc.Star === 0){
+            return (<img src={unstrImg} height={'20px'} width={'20px'} alt={'Not available'} onClick={() => this.handleStarAction(doc)}/>);
+        }
+        else{
+            return (<img src={strImg} height={'20px'} width={'20px'} alt={'Not available'} onClick={() => this.handleStarAction(doc)}/>);
+        }
+    };
+
     displayDocument = (doc) => {
         if(doc.DocType === "folder"){
-            return ( <button type="button" class="btn btn-link" onClick = {(event) => this.navigateFolder(event)} value={doc.DocName} > {doc.DocName} </button>);
+            return ( <button type="button" className="btn btn-link" onClick = {(event) => this.navigateFolder(event)} value={doc.DocName} > {doc.DocName} </button>);
         }
         else{
             return doc.DocName   ;
@@ -201,8 +230,14 @@ class HomePage extends Component{
 
                         <br/> <br/>
 
+                        Current Path : {this.st.currentPath}
+
+                        <br/> <br/>
+
                         {this.state.user_docs && (this.state.user_docs.map(doc => (
                             <p>
+                                {this.displayStar(doc)}
+                                &nbsp; &nbsp; &nbsp; &nbsp;
                                 {this.displayDocument(doc)}
                             </p>
                         )))}
