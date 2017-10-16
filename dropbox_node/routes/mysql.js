@@ -1,9 +1,10 @@
 var mysql = require('mysql');
 
-//Put your mysql configuration settings - user, password, database and port
+// -------------------------------------------- With Connection Pooling ------------------------------------------------
 function getConnection(){
     var connection = mysql.createPool({
-        connecitonLimit : 20,
+        connecitonLimit : 1000,
+        queueLimit : 100,
         host     : 'localhost',
         user     : 'root',
         password : '#VishwesH@07#',
@@ -23,7 +24,6 @@ function dbOperation(callback,sqlQuery){
         connection.query(sqlQuery, function (err, rows, fields) {
             if (err) {
                 console.log("\n ERROR: " + err.message);
-                connection.release();
             }
             else {
                 console.log("\n DB Results : " + rows.length);
@@ -34,5 +34,39 @@ function dbOperation(callback,sqlQuery){
         connection.release();
     });
 }
+
+    // -------------------------------------------- Without Connection Pooling ---------------------------------------------
+    // function getConnection(){
+    //     var connection = mysql.createConnection({
+    //         host     : 'localhost',
+    //         user     : 'root',
+    //         password : '#VishwesH@07#',
+    //         database : 'dropbox',
+    //         port	 : 3306
+    //     });
+    //     return connection;
+    // }
+    //
+    // function dbOperation(callback,sqlQuery){
+    //
+    //     console.log("\nSQL Query : "+sqlQuery);
+    //
+    //     var connection=getConnection();
+    //
+    //     connection.query(sqlQuery, function(err, rows, fields) {
+    //         if(err){
+    //             console.log("\n ERROR: " + err.message);
+    //         }
+    //         else
+    //         {
+    //             // return err or result
+    //             console.log("\n DB Results : "+rows.length);
+    //             callback(err, rows);
+    //         }
+    //     });
+    //     console.log("\n Connection closed.");
+    //     connection.end();
+    // }
+
 
 exports.dbOperation = dbOperation;
