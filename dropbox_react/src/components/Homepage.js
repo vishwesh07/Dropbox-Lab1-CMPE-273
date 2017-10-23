@@ -7,6 +7,10 @@ import * as API_GetFiles from '../api/API_GetFiles';
 import * as API_StarAction from '../api/API_StarAction';
 import strImg from '../components/stared.jpg';
 import unstrImg from '../components/unstared.png';
+import file from '../components/file.png';
+import folder from '../components/folder.png';
+import deleteFile from '../components/delete.png';
+import * as API_DeleteDoc from "../api/API_DeleteDoc";
 
 class HomePage extends Component{
 
@@ -126,6 +130,39 @@ class HomePage extends Component{
         });
     };
 
+    handleDelete = (doc) => {
+
+        if (doc.DocType === "folder") {
+
+            API_DeleteDoc.deleteFolder(doc)
+                .then((res) => {
+                    API_GetFiles.getDocs(this.st)
+                        .then((data) => {
+                            console.log(data);
+                            this.setState({
+                                ...this.state,
+                                user_docs: data
+                            });
+                        });
+                });
+        }
+
+
+        else if (doc.DocType === "file") {
+            API_DeleteDoc.deleteFile(doc)
+                .then((res) => {
+                    API_GetFiles.getDocs(this.st)
+                        .then((data) => {
+                            console.log(data);
+                            this.setState({
+                                ...this.state,
+                                user_docs: data
+                            });
+                        });
+                });
+        }
+    };
+
     navigateFolder = (event) => {
         console.log("In navigateFolder");
 
@@ -173,14 +210,42 @@ class HomePage extends Component{
 
     displayDocument = (doc) => {
         if(doc.DocType === "folder"){
-            return ( <button type="button" className="btn btn-link" onClick = {(event) => this.navigateFolder(event)} value={doc.DocName} > {doc.DocName} </button>);
+            return (
+                <div>
+                <td>
+                    <img src={folder} height={'30px'} width={'30px'} alt={'Not available'}/>
+                </td>
+                <td>
+                    <button type="button" className="btn btn-link" onClick = {(event) => this.navigateFolder(event)} value={doc.DocName} > {doc.DocName} </button>
+                </td>
+                <td>
+                    <img src={deleteFile} height={'30px'} width={'30px'} alt={'Not available'} onClick={() => this.handleDelete(doc)}/>
+                </td>
+                </div>
+            );
         }
         else{
-            return doc.DocName   ;
+            let filePath = 'http://localhost:3004/'+doc.DocPath+doc.DocName;
+            filePath = filePath.replace("/public","");
+            return(
+                <div>
+                    <td>
+                        <img src={file} height={'30px'} width={'30px'} alt={'Not available'}/>
+                    </td>
+                    <td>
+                        <a href={filePath}>
+                            {doc.DocName}
+                        </a>
+                    </td>
+                    <td>
+                        <img src={deleteFile} height={'30px'} width={'30px'} alt={'Not available'} onClick={() => this.handleDelete(doc)}/>
+                    </td>
+                </div>
+            );
         }
     };
 
-    displayBackButton = () =>{
+    displayBackButton = () => {
         if(this.st.currentPath === './public/upload/'+ this.props.email +'/'){
             return (<td></td>);
         }
@@ -245,6 +310,10 @@ class HomePage extends Component{
                                     <input className={'fileupload'} type="file" name="myfile" onChange={this.handleFileUpload}/>
                                 </div>
 
+                                <br/> <br/>
+
+                                <a href={'Activity.js'}> Activity </a>
+
                             </div>
                             <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
                                 <h1 className="page-header">
@@ -256,9 +325,9 @@ class HomePage extends Component{
 
                                 </h1>
 
-                                <br/> <br/>
+                                {/*<br/> <br/>*/}
 
-                                Current Path : {this.st.currentPath}
+                                {/*Current Path : {this.st.currentPath}*/}
 
                                 <br/> <br/>
 
@@ -266,10 +335,10 @@ class HomePage extends Component{
                                     <table className="table table-striped">
                                         <thead>
                                         <tr>
-                                            <th>Favorite</th>
-                                            <th>DocName</th>
-                                            <th>Owner</th>
-                                            <th>DocPath</th>
+                                            <th style={{textAlign: 'center'}}>Favorite</th>
+                                            <th style={{textAlign: 'center'}}>DocName</th>
+                                            <th style={{textAlign: 'center'}}>Owner</th>
+                                            <th style={{textAlign: 'center'}}>DocPath</th>
                                         </tr>
                                         </thead>
                                         <tbody>

@@ -213,6 +213,10 @@ class RoutingComponent extends Component {
                     <Homepage email={this.state.email} username={this.state.username} handleSignOut={this.handleSignOut} />
                 )}/>
 
+                <Route exact path="/Activity" render={() => (
+                    <Homepage email={this.state.email} username={this.state.username} handleSignOut={this.handleSignOut} />
+                )}/>
+
             </div>
 
         );

@@ -9,6 +9,7 @@ var user_signIn = require('./routes/users_SignIn');
 var user_docs = require('./routes/user_docs');
 var user_IsSignedIn = require('./routes/user_IsSignedIn');
 var user_signOut = require('./routes/user_SignOut');
+var user_Activity = require('./routes/user_Activity');
 var cors = require('cors');
 
 var app = express();
@@ -48,6 +49,7 @@ app.use('/SignIn', user_signIn);
 app.use('/IsSignedIn', user_IsSignedIn);
 app.use('/docs', user_docs);
 app.use('/SignOut', user_signOut);
+app.use('/Activity', user_Activity);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

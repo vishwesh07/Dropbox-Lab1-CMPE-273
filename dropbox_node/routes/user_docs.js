@@ -153,13 +153,15 @@ router.post('/starUnstarDoc', function (req, res, next) {
 // File Delete - Additional
 router.post('/delete', function (req, res, next) {
 
-    var filePath = req.body.filePath;
+    var filePath = req.body.DocPath;
 
-    var fileName = req.body.filename;
+    var fileName = req.body.DocName;
 
-    shelljs.rm(filePath);
+    console.log(filePath+"/"+fileName);
 
-    var deleteFileDetails= "DELETE FROM documents WHERE DocName='"+ fileName +"'";
+    shelljs.rm(filePath+"/"+fileName);
+
+    var deleteFileDetails= "DELETE FROM documents WHERE DocName='"+ fileName +"' AND DocPath='"+filePath+"'";
 
     console.log("Query is:"+deleteFileDetails);
 
@@ -270,15 +272,15 @@ router.post('/create', function (req, res, next) {
 // Folder delete - Additional - Partial
 router.post('/remove', function (req, res, next) {
 
-    var folderPath = req.body.folderPath;
+    var folderPath = req.body.DocPath;
 
-    var folderName = req.body.foldername;
+    var folderName = req.body.DocName;
 
-    shelljs.rm('-r',folderPath);
+    console.log(folderPath+folderName);
 
-    var deleteFolderDetails= "DELETE FROM documents WHERE DocName='"+ folderName +"'";
+    shelljs.rm('-r',folderPath+folderName);
 
-    // remaining deletion of folder hierarchy in database.
+    var deleteFolderDetails= "DELETE FROM documents WHERE DocPath LIKE '"+folderPath+folderName+"%' OR DocPath='"+folderPath+"' AND DocName='"+folderName+"'";
 
     console.log("Query is:"+deleteFolderDetails);
 
@@ -387,5 +389,8 @@ router.post('/getUsers', function (req, res, next) {
 
 });
 
+router.get('/upload/Mils@gmail.com/K-F-P.jpg', function(req, res) {
+    res.sendFile('public/upload/Mils@gmail.com/K-F-P.jpg')
+})
 
 module.exports = router;

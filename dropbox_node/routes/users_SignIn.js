@@ -59,11 +59,11 @@ router.post('/', function(req, res, next) {
                         }
                     },activityQuery);
 
-                    return res.json({status: 200, username:  req.session.username , email: req.session.email});
+                    return res.status(200).json({status: 200, username:  req.session.username , email: req.session.email});
 
                 }
                 else{
-                    return res.json({status: 401});
+                    return res.status(401).json({status: 401});
                 }
 
 
@@ -76,7 +76,7 @@ router.post('/', function(req, res, next) {
 
                 // req.session.destroy();
 
-                return res.json({status: 401});
+                return res.status(401).json({status: 401});
 
                 // return res.status(401).send();
 
